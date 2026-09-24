@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071521" />
+    <meta name="description" content="Measure your real download speed, upload speed, ping and jitter." />
+    <title>Pulse — Internet Speed Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#speed-test">Skip to speed test</a>
+    <div class="page-glow glow-one"></div>
+    <div class="page-glow glow-two"></div>
+
+    <header class="site-header container">
+      <a class="brand" href="#top" aria-label="Pulse home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>pulse<span class="brand-dot">.</span></span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#history">History</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button class="theme-toggle icon-button" id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch theme">
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8a8.5 8.5 0 1 0 11.3 11.3Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero container" id="speed-test" aria-labelledby="hero-title">
+        <div class="eyebrow"><span></span> Precision network diagnostics</div>
+        <h1 id="hero-title">Test your internet<br /><em>at full speed.</em></h1>
+        <p class="hero-copy">Check your download, upload, ping and connection quality in one clear, private snapshot.</p>
+
+        <section class="test-panel" aria-label="Internet speed test">
+          <div class="panel-topline">
+            <div class="test-status"><span class="status-light" id="statusLight"></span><span id="testStatus" aria-live="polite">Ready when you are</span></div>
+            <span class="server-mini" id="serverMini">Finding best server…</span>
+          </div>
+          <div class="meter-wrap">
+            <div class="meter-rings" id="meter" role="img" aria-label="Current speed: 0 megabits per second">
+              <div class="meter-ticks" aria-hidden="true"></div>
+              <div class="meter-core">
+                <span class="metric-label" id="meterLabel">DOWNLOAD</span>
+                <output class="meter-value" id="meterValue">—</output>
+                <span class="meter-unit">Mbps</span>
+              </div>
+              <span class="meter-scale scale-left">0</span><span class="meter-scale scale-right">MAX</span>
+            </div>
+          </div>
+          <div class="test-controls">
+            <button class="primary-button" id="startButton" type="button"><span class="button-icon">↗</span> Start test</button>
+            <button class="secondary-button hidden" id="cancelButton" type="button">Cancel test</button>
+            <button class="secondary-button hidden" id="againButton" type="button">Test again</button>
+          </div>
+          <p class="test-note" id="testNote">Uses real data transferred between your browser and the selected server.</p>
+        </section>
+
+        <section class="metrics-grid" aria-label="Speed test metrics">
+          <article class="metric-card download-card">
+            <div class="metric-card-heading"><span class="metric-icon down">↓</span><span>Download</span><small>Mbps</small><span class="metric-live" id="downloadLive">LIVE</span></div>
+            <div class="speed-value"><output id="downloadValue">—</output></div>
+            <p class="sr-only" id="downloadHint">Waiting to test</p>
+          </article>
+          <article class="metric-card upload-card">
+            <div class="metric-card-heading"><span class="metric-icon up">↑</span><span>Upload</span><small>Mbps</small></div>
+            <div class="speed-value"><output id="uploadValue">—</output></div>
+            <p class="sr-only" id="uploadHint">Waiting to test</p>
+          </article>
+            <div class="latency-strip">
+              <div class="latency-stat"><span>Ping <small>ms</small></span><output id="pingValue">—</output><p class="sr-only" id="pingHint">Response time</p></div>
+              <div class="latency-stat"><span class="metric-icon ping">⌁</span><output id="jitterValue">—</output><small>Jitter</small><p class="sr-only" id="jitterHint">Latency variation</p></div>
+            </div>
+        </section>
+      </section>
+
+      <section class="details-section container">
+        <article class="live-graph-panel">
+          <div class="section-heading"><div><p class="section-kicker">Live telemetry</p><h2>Speed over time</h2></div><div class="graph-key"><span></span> Mbps</div></div>
+          <div class="chart-shell"><canvas id="speedChart" aria-label="Live speed graph" role="img"></canvas><div class="chart-empty" id="chartEmpty">Your live speed will appear here</div></div>
+        </article>
+        <article class="connection-panel">
+          <p class="section-kicker">Network profile</p>
+          <h2>Your connection</h2>
+          <dl class="connection-list">
+            <div><dt><span class="detail-icon">⌘</span> IP address</dt><dd id="ipAddress">Locating…</dd></div>
+            <div><dt><span class="detail-icon">◉</span> ISP</dt><dd id="ispName">Checking…</dd></div>
+            <div><dt><span class="detail-icon">◈</span> Test server</dt><dd id="serverName">Selecting…</dd></div>
+            <div><dt><span class="detail-icon">⌖</span> Server location</dt><dd id="serverLocation">Selecting…</dd></div>
+            <div><dt><span class="detail-icon">◌</span> Connection</dt><dd id="connectionType">Checking…</dd></div>
+            <div><dt><span class="detail-icon">▱</span> Device</dt><dd id="deviceName">Detecting…</dd></div>
+          </dl>
+          <p class="isp-note" id="ispNote">Your ISP is identified from the public IP seen by the test server. The speed result uses real bytes transferred over this connection.</p>
+        </article>
+      </section>
+
+      <section class="result-section container hidden" id="resultSection" aria-labelledby="result-title">
+        <article class="result-card" id="resultCard">
+          <div class="result-pattern" aria-hidden="true"></div>
+          <div class="result-content">
+            <div><p class="section-kicker">Your result</p><h2 id="result-title">A <span id="qualityText">strong</span> connection.</h2><p id="qualityDescription">Your network has been measured and summarized below.</p></div>
+            <div class="quality-badge excellent" id="qualityBadge"><span></span><span id="qualityBadgeText">Excellent</span></div>
+          </div>
+          <div class="result-numbers">
+            <div><span>Download</span><strong id="resultDownload">—</strong><small>Mbps</small></div>
+            <div><span>Upload</span><strong id="resultUpload">—</strong><small>Mbps</small></div>
+            <div><span>Ping</span><strong id="resultPing">—</strong><small>ms</small></div>
+            <div><span>Jitter</span><strong id="resultJitter">—</strong><small>ms</small></div>
+          </div>
+          <div class="result-actions">
+            <button class="action-button" id="shareButton" type="button"><span>↗</span> Share result</button>
+            <button class="action-button" id="copyButton" type="button"><span>⧉</span> Copy result</button>
+            <button class="action-button" id="downloadImageButton" type="button"><span>↓</span> Download image</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="history-section container" id="history" aria-labelledby="history-title">
+        <div class="section-heading history-heading"><div><p class="section-kicker">On this device</p><h2 id="history-title">Recent results</h2></div><button class="text-button hidden" id="clearHistory" type="button">Clear history</button></div>
+        <div id="historyList" class="history-list"><p class="history-empty">No tests yet. Your recent results stay privately on this device.</p></div>
+      </section>
+
+      <section class="how-section container" id="how-it-works">
+        <div><p class="section-kicker">Designed for clarity</p><h2>Useful numbers,<br />not just a big one.</h2></div>
+        <div class="how-items">
+          <article><span>01</span><h3>Find the closest route</h3><p>We automatically select the configured edge server and measure round-trip latency first.</p></article>
+          <article><span>02</span><h3>Transfer real data</h3><p>Actual data is streamed to and from the server. Cache-busting protects the result from old responses.</p></article>
+          <article><span>03</span><h3>Put it in context</h3><p>Download, upload, ping and jitter are combined into a simple connection-quality signal.</p></article>
+        </div>
+      </section>
+
+      <section class="faq-section container" id="faq" aria-labelledby="faq-title">
+        <p class="section-kicker">Questions, answered</p><h2 id="faq-title">Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>Does this use a real speed test?<span>+</span></summary><p>Yes. The test measures the time required to transfer actual bytes between your browser and this server. Results reflect the route and conditions available at test time.</p></details>
+          <details><summary>Why can results change between tests?<span>+</span></summary><p>Wi-Fi signal, other devices, VPNs, server load, and routing can all affect performance. Run a few tests at different times for a broader view.</p></details>
+          <details><summary>Is my result stored online?<span>+</span></summary><p>No. Recent results are saved only in your browser’s local storage. You can clear them at any time.</p></details>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer container"><span>© <span id="year"></span> Pulse Speed Test</span><span>Built for a clearer connection.</span></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
